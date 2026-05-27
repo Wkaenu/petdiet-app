@@ -58,6 +58,10 @@ Respond ONLY in valid JSON with no markdown:
 
   const text = message.content[0].type === 'text' ? message.content[0].text : ''
   const plan = JSON.parse(text.replace(/```json|```/g, '').trim())
-
+await supabase.from('meal_history').insert({
+  user_id: user.id,
+  kcal,
+  plan
+})
   return NextResponse.json(plan)
 }
