@@ -37,21 +37,29 @@ export default function PetForm() {
   const kcal = calcCalories()
 
   const handleSubmit = async () => {
-    if (!kcal) return
-    setLoading(true)
-    try {
-      const res = await fetch('/api/meal-plan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ petType, name, breed, age, weight, status, health, ingredients, kcal })
-      })
-      const data = await res.json()
-      setPlan(data)
-    } catch (e) {
-      console.error(e)
+  if (!kcal) return
+  setLoading(true)
+  try {
+    const res = await fetch('/api/meal-plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ petType, name, breed, age, weight, status, health, ingredients, kcal })
+    })
+    if (res.status === 401) {
+      window.location.href = '/login'
+      return
     }
-    setLoading(false)
+    if (res.status === 403) {
+      window.location.href = '/pricing'
+      return
+    }
+    const data = await res.json()
+    setPlan(data)
+  } catch (e) {
+    console.error(e)
   }
+  setLoading(false)
+}
 
   return (
     <div className="space-y-6">
